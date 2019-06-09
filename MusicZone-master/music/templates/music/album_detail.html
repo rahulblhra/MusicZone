@@ -1,0 +1,106 @@
+{% extends 'music/base.html' %}
+{% block title %}{{ album.title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid songs-container">
+
+    <div class="row">
+
+        <!-- Left Album Info -->
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a href="{% url 'album-detail' album.id %}">
+                        {% if album.logo %}
+                            <img src="{{ album.logo.url }}" class="img-responsive">
+                        {% else %}
+                            <h3>No image to display</h3>
+                        {% endif %}
+                    </a>
+                    <h1>{{ album.title }} <small>{{ album.genre }}</small></h1>
+                    <h4 style="color: #4d4d4d">{{ album.artist }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Song Info -->
+        <div class="col-sm-8 col-md-9">
+
+            <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                <li role="presentation" class="active"><a href="{% url 'album-detail' album.id %}">View All</a></li>
+                {% if user.is_authenticated %}
+                <li role="presentation"><a href="{% url 'create-album-song' album.id %}">Add New Song</a></li>
+                {% endif %}
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>All Songs</h3>
+
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <table class="table table-striped">
+                        <thead>
+                        <tr class="info">
+                            <th>Title</th>
+                            <th>Audio File</th>
+                            {% if user.is_authenticated %}
+                            <th>Favorite</th>
+                            <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for song in album.song_set.all %}
+                            <tr>
+                                <td>{{ song.title }}</td>
+                                <td>
+                                    <audio id={{ song.title }} src="{{ song.audio.url }}"></audio>
+                                        <button type="button" class="btn btn-success btn-xs" value={{song.title}} onclick="play(this)">
+                                            <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                                        </button>
+                                </td>
+                                {% if user.is_authenticated %}
+                                <td>
+                                    <a href="{% url 'song-favorite' song.id %}" class="btn-favorite"><span class="glyphicon glyphicon-heart"></span></a>
+                                </td>
+                                <td>
+                                    <form action="{% url 'delete-song' song.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="song_id" value="{{ song.id }}" />
+                                        <button type="submit" class="btn btn-danger btn-xs">
+                                            <span class="glyphicon glyphicon-trash"></span>&nbsp; Delete
+                                        </button>
+                                    </form>
+                                </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+    function play(x){
+    var audio = document.getElementById(x.value);
+    if(audio.paused){
+    audio.play();
+}
+else{
+    audio.pause();
+}
+}
+{% endblock %}

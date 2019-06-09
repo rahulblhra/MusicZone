@@ -1,0 +1,103 @@
+{% extends 'music/base.html' %}
+
+{% block favorite_avtive %}{{ fav }}{% endblock %}
+{% block albums_active %}{{ indx }}{% endblock %}
+
+
+{% block content %}
+<div class="albums-container container-fluid">
+    {% if albums %}
+    <div class="row">
+        <div class="col-sm-12">
+            <h3><b>Albums</b></h3>
+        </div>
+            {% for album in albums %}
+                <div class="col-sm-4 col-lg-3">
+                    <div class="thumbnail">
+                        <a href="{% url 'album-detail' album.id %}">
+                            <div style="height: 200px">
+                                <center><img src="{{ album.logo.url }}" class="img-responsive" style="height: 190px"></center>
+                                <hr>
+                            </div>
+                        </a>
+                        <div class="caption">
+                            <h2><b>{{ album.title }}</b></h2>
+                            <h5 style="color:#595959">&emsp; {{ album.artist }}</h5>
+                        </div>
+                        <a href="{% url 'album-detail' album.id %}" class="btn btn-primary btn-sm" role="button">View Details</a>
+                    {% if user.is_authenticated %}
+                            <a href="{% url 'update-album' album.id %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                            <a href="{% url 'album-favorite' album.id %}" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-heart"></span>    
+                            </a>
+                            <a href="{% url 'delete-album' album.id %}" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                    {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if songs %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3><b>Songs</b></h3>
+                </div>
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="info">
+                                        <th>Song Title</th>
+                                        <th>Artist</th>
+                                        <th>Audio File</th>
+                                        <th>Album</th>
+                                        {% if user.is_authenticated %}
+                                        <th>Favorite</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for song in songs %}
+                                        <tr>
+                                            <td>{{ song.title }}</td>
+                                            <td>{{ song.album.artist }}</td>
+                                            <td>
+                                                <a target="_blank" href="{{ song.audio.url }}">
+                                                    <button type="button" class="btn btn-success btn-xs">
+                                                        <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                                                    </button>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'album-detail' song.album.id %}">
+                                                    <img src="{{ song.album.logo.url }}" class="img-responsive" style="width: 50px; float: left; margin-right: 10px;" />
+                                                </a>
+                                                <a href="{% url 'album-detail' song.album.id %}">{{ song.album.title }}</a>
+                                            </td>
+                                            {% if user.is_authenticated %}
+                                            <td>
+                                                <a href="{% url 'song-favorite' song.id %}" class="btn-favorite"><span class="glyphicon glyphicon-heart"></span></a>
+                                            </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if not albums and not songs %}
+            <div class="jumbotron">
+                <h2><b>No Results</b></h2>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

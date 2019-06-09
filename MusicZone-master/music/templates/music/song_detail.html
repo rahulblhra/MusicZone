@@ -1,0 +1,11 @@
+{% extends 'music/base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+	<div>
+		<center><h2><b>{{ song.title }}</b></h2></center>
+		<h4 style="float: right;margin-right: 45%"> - {{ song.album.title }}</h4><br>
+	</div><hr>
+	<center><a href="{{ song.audio.url }}" class="btn btn-lg btn-success"><span class="glyphicon glyphicon-play"></span>&nbsp; Play</a></center>
+</div>
+{% endblock %}

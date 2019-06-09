@@ -1,0 +1,11 @@
+{% extends 'music/base.html' %}
+{% block title %}Confirm Delete{% endblock %}
+{% block content %}
+<div class="jumbotron" style="border-radius: 20px">
+	<center><h2><b>Delete Album - {{ album.title }}</b></h2></center><hr>
+	<form action="" method="post">
+		{% csrf_token %}
+		<center><button type="submit" class="btn btn-danger btn-lg">Yes</button><a href="{% url 'index' %}" class="btn btn-success btn-lg" style="margin-left: 50px">Cancel</a></center>
+	</form>
+</div>
+{% endblock %}
